@@ -47,10 +47,28 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: recursive
-    # download wheel from GHA
-    - name: Download wheel
-      uses: actions/download-artifact@v2
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
       with:
+        # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+        # Required, if artifact is from a different repo
+        # Required, if repo is private a Personal Access Token with `repo` scope is needed
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        # Required, workflow file name or ID
+        workflow: 1758364806
+        # Optional, the status or conclusion of a completed workflow to search for
+        # Can be one of a workflow conclusion:
+        #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+        # Or a workflow status:
+        #   "completed", "in_progress", "queued"
+        workflow_conclusion: failure
+        branch: renfeichen-test-binary
+        # Optional, will use specified workflow run
+        run_id: 1758364806
+        # Optional, uploaded artifact name,
+        # will download all artifacts if not specified
+        # and extract them in respective subdirectories
+        # https://github.com/actions/download-artifact#download-all-artifacts
         name: torchrec_nightly.whl
     - name: Display structure of downloaded files
       run: ls -R
