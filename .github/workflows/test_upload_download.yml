@@ -16,31 +16,30 @@ on: [push, pull_request]
 jobs:
 
   # build on cpu hosts and upload to GHA
-  build_on_cpu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python-version: [3.8]
-        os: [ubuntu-18.04]
-    steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: create a dummy txt
-      run: |
-        < /dev/urandom tr -dc "[:alnum:]" | head -c1000 > test.txt
-    - name: Upload wheel as GHA artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: whatisthis.txt
-        path: test.txt
+#   build_on_cpu:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         python-version: [3.8]
+#         os: [ubuntu-18.04]
+#     steps:
+#     # Checkout the repository to the GitHub Actions runner
+#     - name: Checkout
+#       uses: actions/checkout@v2
+#       with:
+#         submodules: recursive
+#     - name: create a dummy txt
+#       run: |
+#         < /dev/urandom tr -dc "[:alnum:]" | head -c1000 > test.txt
+#     - name: Upload wheel as GHA artifact
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: whatisthis.txt
+#         path: test.txt
     
 
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
-    needs: build_on_cpu
     runs-on: linux.4xlarge.nvidia.gpu
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -52,10 +51,6 @@ jobs:
     - name: Download wheel
       uses: actions/download-artifact@v2
       with:
-        name: whatisthis.txt
+        name: torchrec_nightly.whl
     - name: Display structure of downloaded files
       run: ls -R
-    - name: Display the dummy file
-      run: |
-        cat whatisthis.txt
-        cat test.txt
