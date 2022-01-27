@@ -70,7 +70,7 @@ def main(argv: List[str]) -> None:
         # torchrec_dir = os.getcwd()
         # os.chdir("third_party/fbgemm/fbgemm_gpu/")
         # os.system(
-        #     'TORCH_CUDA_ARCH_LIST="7.0;8.0" python setup.py build'
+        #     'TORCH_CUDA_ARCH_LIST="6.0" python setup.py build'
         # )
         # os.chdir(torchrec_dir)
         my_env = os.environ.copy()
