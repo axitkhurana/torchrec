@@ -32,10 +32,10 @@ jobs:
       run: |
         < /dev/urandom tr -dc "[:alnum:]" | head -c1000 > test.txt
     - name: Upload wheel as GHA artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: test.txt
-          path: test.txt
+      uses: actions/upload-artifact@v2
+      with:
+        name: test.txt
+        path: test.txt
     
 
   # download from GHA, test on gpu and push to pypi
