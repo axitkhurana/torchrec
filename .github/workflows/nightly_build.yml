@@ -197,8 +197,7 @@ jobs:
     - name: Build and Install TorchRec Nightly
       run: |
         source build_binary_3.8/bin/activate
-        rm -r dist || true
-        pip3 install torchrec_nightly.whl
+        pip3 install *.whl
     - name: Test fbgemm_gpu and torchrec installation
       shell: bash
       run: |
