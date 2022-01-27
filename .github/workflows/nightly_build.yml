@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: [linux.2xlarge]
+        os: [ubuntu-16.04]
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
