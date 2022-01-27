@@ -15,79 +15,79 @@ on: [push, pull_request]
 
 jobs:
 
-  # build on cpu hosts and upload to GHA
-  build_on_cpu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python-version: [3.8]
-        os: [ubuntu-18.04]
-    steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Git Sumbodule Update
-      run: |
-        git submodule init
-        git submodule update --remote --recursive
-        cd third_party/fbgemm/
-        git submodule sync
-        git submodule update --init --recursive
-        git log
-    - name: Check Git Log
-      run: |
-        git log
-        cd third_party/fbgemm/
-        git log
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
-    - name: check python version
-      run: |
-        python --version
-        python3 --version
-    - name: Install CUDA 11.3
-      shell: bash
-      run: |
-        wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-        sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-        sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
-        sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
-        sudo apt-get update
-        sudo apt-get -y install cuda-minimal-build-11-3 cuda-nvrtc-dev-11-3 cuda-nvtx-11-3 cuda-libraries-dev-11-3
-        sudo apt-get -y install libcudnn8-dev
-    - name: setup Path
-      run: |
-        echo /usr/local/cuda-11.3/bin >> $GITHUB_PATH
-        echo /usr/local/bin >> $GITHUB_PATH
-    - name: nvcc check
-      run: |
-        nvcc --version
-    - name: Install PyTorch
-      shell: bash
-      run: |
-        pip install --pre torch -f https://download.pytorch.org/whl/nightly/cu113/torch_nightly.html
-    - name: Install Dependencies
-      shell: bash
-      run: |
-        pip install -r requirements.txt
-    - name: Build and Install TorchRec Nightly
-      run: |
-        rm -r dist || true
-        python setup.py bdist_wheel --override_name torchrec-nightly --TORCH_CUDA_ARCH_LIST '7.0;8.0'
-    - name: Upload wheel as GHA artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: torchrec_nightly.whl
-        path: dist/*.whl
+#   # build on cpu hosts and upload to GHA
+#   build_on_cpu:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         python-version: [3.8]
+#         os: [ubuntu-18.04]
+#     steps:
+#     # Checkout the repository to the GitHub Actions runner
+#     - name: Checkout
+#       uses: actions/checkout@v2
+#       with:
+#         submodules: recursive
+#     - name: Git Sumbodule Update
+#       run: |
+#         git submodule init
+#         git submodule update --remote --recursive
+#         cd third_party/fbgemm/
+#         git submodule sync
+#         git submodule update --init --recursive
+#         git log
+#     - name: Check Git Log
+#       run: |
+#         git log
+#         cd third_party/fbgemm/
+#         git log
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v2
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#         architecture: x64
+#     - name: check python version
+#       run: |
+#         python --version
+#         python3 --version
+#     - name: Install CUDA 11.3
+#       shell: bash
+#       run: |
+#         wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+#         sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+#         sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+#         sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+#         sudo apt-get update
+#         sudo apt-get -y install cuda-minimal-build-11-3 cuda-nvrtc-dev-11-3 cuda-nvtx-11-3 cuda-libraries-dev-11-3
+#         sudo apt-get -y install libcudnn8-dev
+#     - name: setup Path
+#       run: |
+#         echo /usr/local/cuda-11.3/bin >> $GITHUB_PATH
+#         echo /usr/local/bin >> $GITHUB_PATH
+#     - name: nvcc check
+#       run: |
+#         nvcc --version
+#     - name: Install PyTorch
+#       shell: bash
+#       run: |
+#         pip install --pre torch -f https://download.pytorch.org/whl/nightly/cu113/torch_nightly.html
+#     - name: Install Dependencies
+#       shell: bash
+#       run: |
+#         pip install -r requirements.txt
+#     - name: Build and Install TorchRec Nightly
+#       run: |
+#         rm -r dist || true
+#         python setup.py bdist_wheel --override_name torchrec-nightly --TORCH_CUDA_ARCH_LIST '7.0;8.0'
+#     - name: Upload wheel as GHA artifact
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: torchrec_nightly.whl
+#         path: dist/*.whl
 
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
-    needs: build_on_cpu
+#     needs: build_on_cpu
     runs-on: linux.4xlarge.nvidia.gpu
     steps:
     - name: check cpu info
@@ -173,24 +173,47 @@ jobs:
       run: |
         source build_binary_3.8/bin/activate
         pip3 install --pre torch -f https://download.pytorch.org/whl/nightly/cu113/torch_nightly.html
-    - name: Install Dependencies
-      shell: bash
-      run: |
-        source build_binary_3.8/bin/activate
-        pip3 install -r requirements.txt
-    - name: Test Installation of dependencies
-      run: |
-        source build_binary_3.8/bin/activate
-        python3 -c "import torch.distributed"
-        echo "torch.distributed succeeded"
-        python3 -c "import skbuild"
-        echo "skbuild succeeded"
-        python3 -c "import numpy"
-        echo "numpy succeeded"
+#     - name: Install Dependencies
+#       shell: bash
+#       run: |
+#         source build_binary_3.8/bin/activate
+#         pip3 install -r requirements.txt
+#     - name: Test Installation of dependencies
+#       run: |
+#         source build_binary_3.8/bin/activate
+#         python3 -c "import torch.distributed"
+#         echo "torch.distributed succeeded"
+#         python3 -c "import skbuild"
+#         echo "skbuild succeeded"
+#         python3 -c "import numpy"
+#         echo "numpy succeeded"
     # download wheel from GHA
-    - name: Download wheel
-      uses: actions/download-artifact@v2
+#     - name: Download wheel
+#       uses: actions/download-artifact@v2
+#       with:
+#         name: torchrec_nightly.whl
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
       with:
+        # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+        # Required, if artifact is from a different repo
+        # Required, if repo is private a Personal Access Token with `repo` scope is needed
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        # Required, workflow file name or ID
+        workflow: 1758364806
+        # Optional, the status or conclusion of a completed workflow to search for
+        # Can be one of a workflow conclusion:
+        #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+        # Or a workflow status:
+        #   "completed", "in_progress", "queued"
+        workflow_conclusion: failure
+        branch: renfeichen-test-binary
+        # Optional, will use specified workflow run
+        run_id: 1758364806
+        # Optional, uploaded artifact name,
+        # will download all artifacts if not specified
+        # and extract them in respective subdirectories
+        # https://github.com/actions/download-artifact#download-all-artifacts
         name: torchrec_nightly.whl
     - name: Display structure of downloaded files
       run: ls -R
@@ -199,6 +222,7 @@ jobs:
         source build_binary_3.8/bin/activate
         pip3 install *.whl
     - name: Test fbgemm_gpu and torchrec installation
+      continue-on-error: true
       shell: bash
       run: |
         source build_binary_3.8/bin/activate
