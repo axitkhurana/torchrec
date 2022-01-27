@@ -40,7 +40,8 @@ jobs:
 
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
-    runs-on: linux.4xlarge.nvidia.gpu
+    runs-on: ubuntu-18.04
+#     runs-on: linux.4xlarge.nvidia.gpu
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
