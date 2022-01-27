@@ -88,7 +88,7 @@ jobs:
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
     needs: build_on_cpu
-    runs-on: linux.8xlarge.nvidia.gpu
+    runs-on: linux.4xlarge.nvidia.gpu
     steps:
     - name: check cpu info
       shell: bash
