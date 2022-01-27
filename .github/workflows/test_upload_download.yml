@@ -1,0 +1,61 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on: [push, pull_request]
+  # Run on PRs and pushes to the default branch.
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
+  # # run every day at 23:15am
+  # schedule:
+  #   - cron:  '15 23 * * *'
+
+jobs:
+
+  # build on cpu hosts and upload to GHA
+  build_on_cpu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.8]
+        os: [ubuntu-18.04]
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: create a dummy txt
+      run: |
+        < /dev/urandom tr -dc "[:alnum:]" | head -c1000 > test.txt
+    - name: Upload wheel as GHA artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: whatisthis.txt
+        path: test.txt
+    
+
+  # download from GHA, test on gpu and push to pypi
+  test_on_gpu:
+    needs: build_on_cpu
+    runs-on: linux.4xlarge.nvidia.gpu
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    # download wheel from GHA
+    - name: Download wheel
+      uses: actions/download-artifact@v2
+      with:
+        name: whatisthis.txt
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: Display the dummy file
+      run: |
+        cat whatisthis.txt
+        cat test.txt
