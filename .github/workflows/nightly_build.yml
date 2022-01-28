@@ -244,4 +244,4 @@ jobs:
         twine upload --repository-url https://test.pypi.org/legacy/ \
             --username __token__ \
             --password "$TEST_PYPI_TOKEN" \
-            dist/*
+            *.whl
