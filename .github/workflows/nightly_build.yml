@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: [ubuntu-16.04]
+        os: [linux.2xlarge]
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -30,28 +30,28 @@ jobs:
         submodules: recursive
     - name: Check ldd --version
       run: ldd --version
-#     - name: Git Sumbodule Update
-#       run: |
-#         git submodule init
-#         git submodule update --remote --recursive
-#         cd third_party/fbgemm/
-#         git submodule sync
-#         git submodule update --init --recursive
-#         git log
-#     - name: Check Git Log
-#       run: |
-#         git log
-#         cd third_party/fbgemm/
-#         git log
-#     - name: Set up Python ${{ matrix.python-version }}
-#       uses: actions/setup-python@v2
-#       with:
-#         python-version: ${{ matrix.python-version }}
-#         architecture: x64
-#     - name: check python version
-#       run: |
-#         python --version
-#         python3 --version
+    - name: Git Sumbodule Update
+      run: |
+        git submodule init
+        git submodule update --remote --recursive
+        cd third_party/fbgemm/
+        git submodule sync
+        git submodule update --init --recursive
+        git log
+    - name: Check Git Log
+      run: |
+        git log
+        cd third_party/fbgemm/
+        git log
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+    - name: check python version
+      run: |
+        python --version
+        python3 --version
 #     - name: Install CUDA 11.3
 #       shell: bash
 #       run: |
