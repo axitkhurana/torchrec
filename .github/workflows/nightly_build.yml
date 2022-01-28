@@ -4,11 +4,12 @@
 name: Push Binary Nightly
 
 on:
-  # run every day at 11:15am
-  schedule:
-    - cron:  '05 11 * * *'
-  # or manually trigger it
-  workflow_dispatch:
+  [push, pull_request]
+  # # run every day at 11:15am
+  # schedule:
+  #   - cron:  '05 11 * * *'
+  # # or manually trigger it
+  # workflow_dispatch:
 
 jobs:
 
