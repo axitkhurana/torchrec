@@ -243,4 +243,4 @@ jobs:
         twine upload \
             --username __token__ \
             --password "$PYPI_TOKEN" \
-            dist/*
+            *.whl
