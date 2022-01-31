@@ -42,7 +42,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help="if we need to skip the fbgemm_gpu installation",
     )
     parser.add_argument(
-        "--override_name",
+        "--pacakge_name",
         type=str,
         default="torchrec",
         help="the name of this output wheel",
@@ -51,14 +51,12 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         "--TORCH_CUDA_ARCH_LIST",
         type=str,
         default="7.0;8.0",
-        help="the arch list of the torch cuda",
+        help="the arch list of the torch cuda, check here for more detail: https://github.com/pytorch/FBGEMM/tree/main/fbgemm_gpu",
     )
     return parser.parse_known_args(argv)
 
 
 def main(argv: List[str]) -> None:
-    if sys.version_info < (3, 8):
-        sys.exit("python >= 3.8 required for torchrec")
     args, unknown = parse_args(argv)
     print("args: ", args)
     print("unknown: ", unknown)
@@ -67,22 +65,16 @@ def main(argv: List[str]) -> None:
     else:
         print("Installing fbgemm_gpu")
         print("TORCH_CUDA_ARCH_LIST: ", args.TORCH_CUDA_ARCH_LIST)
-        # torchrec_dir = os.getcwd()
-        # os.chdir("third_party/fbgemm/fbgemm_gpu/")
-        # os.system(
-        #     'TORCH_CUDA_ARCH_LIST="6.0" python setup.py build'
-        # )
-        # os.chdir(torchrec_dir)
         my_env = os.environ.copy()
-        my_env["TORCH_CUDA_ARCH_LIST"] = args.TORCH_CUDA_ARCH_LIST
+        cuda_arch_arg = f"-DTORCH_CUDA_ARCH_LIST={args.TORCH_CUDA_ARCH_LIST}"
         out = check_output(
-            [sys.executable, "setup.py", "build"],
+            [sys.executable, "setup.py", "build", cuda_arch_arg],
             cwd="third_party/fbgemm/fbgemm_gpu",
             env=my_env,
         )
         print(out)
 
-    name = args.override_name
+    name = args.pacakge_name
     print("name: ", name)
     is_nightly = "nightly" in name
     is_test = "test" in name
@@ -101,6 +93,7 @@ def main(argv: List[str]) -> None:
     if is_test:
         version = (f"0.0.{random.randint(0, 1000)}",)
     print(f"-- {name} building version: {version}")
+    # the path to find all the packages
     fbgemm_install_base = glob.glob(
         "third_party/fbgemm/fbgemm_gpu/_skbuild/*/cmake-install"
     )[0]
@@ -125,6 +118,7 @@ def main(argv: List[str]) -> None:
         + find_packages(fbgemm_install_base),
         package_dir={
             "torchrec": "torchrec",
+            # to include the fbgemm_gpu.so
             "fbgemm_gpu": glob.glob(
                 "third_party/fbgemm/fbgemm_gpu/_skbuild/*/cmake-install/fbgemm_gpu"
             )[0],
