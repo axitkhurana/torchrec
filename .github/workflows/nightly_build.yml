@@ -102,7 +102,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: torchrec_nightly.whl
-        path: dist/torchrec-nightly-*.whl
+        path: dist/torchrec_nightly-*.whl
 
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
@@ -247,4 +247,4 @@ jobs:
         twine upload \
             --username __token__ \
             --password "$PYPI_TOKEN" \
-            torchrec-nightly-*.whl
+            torchrec_nightly-*.whl
