@@ -97,7 +97,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: torchrec_test.whl
-        path: dist/torchrec-test-*.whl
+        path: dist/torchrec_test-*.whl
 
   # download from GHA, test on gpu and push to pypi
   test_on_gpu:
@@ -217,7 +217,7 @@ jobs:
       run: |
         source build_binary_3.8/bin/activate
         rm -r dist || true
-        pip3 install *.whl
+        pip3 install torchrec_test-*.whl
     - name: Test fbgemm_gpu and torchrec installation
       shell: bash
       run: |
