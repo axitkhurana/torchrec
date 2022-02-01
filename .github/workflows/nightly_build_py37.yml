@@ -57,18 +57,15 @@ jobs:
     #   run: |
     #     sudo pip3 install --upgrade virtualenv
     #     virtualenv build_binary_3.7 -p python3.7
-    - name: check conda
-      run: |
-        echo ${CONDA}
-        ${CONDA}/bin/conda --version
     - name: Setup conda
       run: |
-        conda create -n build_binary_3.7 python=3.7
-        conda info         
-        $CONDA/bin/activate build_binary_3.7
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+        bash ~/miniconda.sh -b -p $HOME/miniconda
+        conda info 
+        conda create --name build_binary_3.7 python=3.7    
     - name: check python version
       run: |
-        $CONDA/bin/activate build_binary_3.7
+        conda activate build_binary_3.7
         python --version
     - name: Install CUDA 11.3
       shell: bash
@@ -90,16 +87,16 @@ jobs:
     - name: Install PyTorch
       shell: bash
       run: |
-        $CONDA/bin/activate build_binary_3.7
+        conda activate build_binary_3.7
         python -m pip install --pre torch -f https://download.pytorch.org/whl/nightly/cu113/torch_nightly.html
     - name: Install Dependencies
       shell: bash
       run: |
-        $CONDA/bin/activate build_binary_3.7
+        conda activate build_binary_3.7
         python -m pip install -r requirements.txt
     - name: Test Installation of dependencies
       run: |
-        $CONDA/bin/activate build_binary_3.7
+        conda activate build_binary_3.7
         python -c "import torch.distributed"
         echo "torch.distributed succeeded"
         python -c "import skbuild"
@@ -108,7 +105,7 @@ jobs:
         echo "numpy succeeded"
     - name: Build TorchRec Nightly
       run: |
-        $CONDA/bin/activate build_binary_3.7
+        conda activate build_binary_3.7
         rm -r dist || true
         python setup.py bdist_wheel --pacakge_name torchrec-nightly --TORCH_CUDA_ARCH_LIST '7.0;8.0'
     - name: Upload wheel as GHA artifact
