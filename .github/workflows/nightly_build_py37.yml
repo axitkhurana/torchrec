@@ -45,6 +45,9 @@ jobs:
     # - name: update python
     #   run: |
     #     sudo amazon-linux-extras install python3.7
+    - name: do something
+      run: |
+        echo "HOME=/home/ubuntu" >> ${GITHUB_ENV}
     - name: Update pip
       run: |
         sudo yum update -y
@@ -55,10 +58,11 @@ jobs:
     #     sudo pip3 install --upgrade virtualenv
     #     virtualenv build_binary_3.7 -p python3.7
     - name: Setup conda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: s-weigand/setup-conda@v1
       with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
+        update-conda: true
+        python-version: ${{ matrix.python-version }}
+        conda-channels: anaconda, conda-forge
     - name: check python version
       run: |
         python --version
