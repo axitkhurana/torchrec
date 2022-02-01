@@ -16,6 +16,7 @@ from subprocess import check_output
 from typing import List
 
 from setuptools import setup, find_packages
+from setuptools.dist import Distribution
 
 
 def get_version():
@@ -55,6 +56,11 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     )
     return parser.parse_known_args(argv)
 
+
+class BinaryDistribution(Distribution):
+  """This class is needed in order to create OS specific wheels."""
+  def has_ext_modules(self):
+    return True
 
 def main(argv: List[str]) -> None:
     args, unknown = parse_args(argv)
@@ -135,6 +141,7 @@ def main(argv: List[str]) -> None:
             "Programming Language :: Python :: 3.8",
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
         ],
+        distclass=BinaryDistribution,
     )
 
 
