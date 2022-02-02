@@ -70,8 +70,12 @@ jobs:
     - name: test Conda
       run: |
         conda --version
-        conda info 
-        conda create --name build_binary_3.7 python=3.7    
+        conda info
+        conda init  
+        conda create --name build_binary_3.7 python=3.7
+    - name: check python version no Conda
+      run: |
+        python --version
     - name: check python version
       run: |
         conda activate activate build_binary_3.7
