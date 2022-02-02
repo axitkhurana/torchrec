@@ -70,6 +70,7 @@ jobs:
         conda create --name build_binary_3.7 python=3.7
         conda info
         /home/ec2-user/miniconda/bin/activate build_binary_3.7
+        conda info
     - name: check python version no Conda
       run: |
         python --version
