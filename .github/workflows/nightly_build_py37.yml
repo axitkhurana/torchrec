@@ -244,9 +244,9 @@ jobs:
       env:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
       run: |
-        source build_binary/bin/activate
-        pip3 install twine
-        twine upload --repository-url https://test.pypi.org/legacy/ \
+        conda run -n build_binary python -m pip install twine
+        conda run -n build_binary \
+          python -m twine upload --repository-url https://test.pypi.org/legacy/ \
             --username __token__ \
             --password "$TEST_PYPI_TOKEN" \
             torchrec_nightly-*.whl
