@@ -61,11 +61,13 @@ jobs:
       run: |
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
         bash ~/miniconda.sh -b -p $HOME/miniconda
+        echo ${CONDA}
+        ${CONDA}/bin/conda --version
         conda info 
         conda create --name build_binary_3.7 python=3.7    
     - name: check python version
       run: |
-        conda activate build_binary_3.7
+        conda activate activate build_binary_3.7
         python --version
     - name: Install CUDA 11.3
       shell: bash
