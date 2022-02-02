@@ -66,7 +66,7 @@ jobs:
         echo /usr/local/cuda-11.3/bin >> $GITHUB_PATH
         echo /usr/local/bin >> $GITHUB_PATH
         echo /home/ec2-user/miniconda >> $GITHUB_PATH
-        /home/ec2-user/miniconda --version
+        ls /home/ec2-user/miniconda
     - name: test Conda
       run: |
         conda --version
