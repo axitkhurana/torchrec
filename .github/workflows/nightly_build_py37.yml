@@ -68,6 +68,7 @@ jobs:
         echo /home/ec2-user/miniconda >> $GITHUB_PATH
         /home/ec2-user/miniconda --version
     - name: test Conda
+      run: |
         conda --version
         conda info 
         conda create --name build_binary_3.7 python=3.7    
