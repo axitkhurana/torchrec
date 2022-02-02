@@ -61,8 +61,14 @@ jobs:
       run: |
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
         bash ~/miniconda.sh -b -p $HOME/miniconda
-        echo ${CONDA}
-        ${CONDA}/bin/conda --version
+    - name: setup Path
+      run: |
+        echo /usr/local/cuda-11.3/bin >> $GITHUB_PATH
+        echo /usr/local/bin >> $GITHUB_PATH
+        echo /home/ec2-user/miniconda >> $GITHUB_PATH
+        /home/ec2-user/miniconda --version
+    - name: test Conda
+        conda --version
         conda info 
         conda create --name build_binary_3.7 python=3.7    
     - name: check python version
