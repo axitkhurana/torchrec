@@ -71,14 +71,15 @@ jobs:
       run: |
         conda --version
         conda info
-        conda init  
         conda create --name build_binary_3.7 python=3.7
+        conda init
     - name: check python version no Conda
       run: |
         python --version
     - name: check python version
       run: |
-        conda activate activate build_binary_3.7
+        conda init
+        conda activate build_binary_3.7
         python --version
     - name: Install CUDA 11.3
       shell: bash
