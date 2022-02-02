@@ -63,15 +63,14 @@ jobs:
         bash ~/miniconda.sh -b -p $HOME/miniconda
     - name: setup Path
       run: |
-        echo /usr/local/cuda-11.3/bin >> $GITHUB_PATH
-        echo /usr/local/bin >> $GITHUB_PATH
-        echo /home/ec2-user/miniconda/bin >> $GITHUB_PATH
-        ls /home/ec2-user/miniconda/bin
+        echo "/home/ec2-user/miniconda/bin" >> $GITHUB_PATH
+        echo "CONDA=/home/ec2-user/miniconda" >> $GITHUB_PATH
     - name: test Conda
       run: |
         conda create --name build_binary_3.7 python=3.7
         conda info
-        $CONDA/bin/activate build_binary_3.7
+        /home/ec2-user/miniconda/bin/activate build_binary_3.7
+        echo "{$CONDA}"
     - name: check python version no Conda
       run: |
         python --version
