@@ -3,7 +3,7 @@
 
 name: Unit Test CI
 
-on: [push, pull_request]
+on: []
 
 jobs:
 
